@@ -9,8 +9,7 @@ typedef struct node {
     struct node *next;
 } node;
 
-
-struct node* initStack() {
+struct node* Stack() {
     return NULL;
 }
 

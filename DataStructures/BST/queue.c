@@ -1,18 +1,6 @@
-#ifndef QUEUE_H
-#define QUEUE_H
+// Queue interface implementation
 
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct node {
-    int value;
-    struct node* next;
-} node;
-
-typedef struct queue {
-    struct node* front;
-    struct node* back;
-} queue;
+#include "queue.h"
 
 struct queue* Queue() {
     struct queue* q = malloc(sizeof(struct queue));
@@ -28,7 +16,7 @@ short isEmpty(struct queue* q) {
     return q -> front == NULL ? 1 : 0;
 }
 
-void enqueue(struct queue* q, int x) {
+void enqueue(struct queue* q, struct vertex* v) {
     struct node* element;
     element = malloc(sizeof(struct node));
 
@@ -36,7 +24,8 @@ void enqueue(struct queue* q, int x) {
         printf("Error: No memory.\n");
         return;
     }
-    element -> value = x;
+
+    element -> vertex = v;
     element -> next = NULL;
 
     if (isEmpty(q) == 1) {
@@ -48,11 +37,9 @@ void enqueue(struct queue* q, int x) {
     }
 }
 
-int dequeue(struct queue* q) {
-    if (isEmpty(q)==1) {
-        printf("Error: Empty queue\n");
-        return -1;
-    }
+struct vertex* dequeue(struct queue* q) {
+    if (isEmpty(q)==1)
+        return NULL;
 
     struct node* temp;
     temp = q -> front;
@@ -62,23 +49,15 @@ int dequeue(struct queue* q) {
     } else
         q -> front = (q -> front) -> next;
     
-    int val = temp -> value;
+    struct vertex* v = temp -> vertex;
     free(temp);
-    return val;
-}
-
-void printQueue(struct queue* q) {
-    struct node* it;
-
-    for (it = q -> front; it != NULL; it = it -> next)
-        printf("%i <- ", it -> value);
-    printf("//\n");
+    return v;
 }
 
 void deleteQueueNodes(struct queue* q) {
     if (q -> front == NULL)
         return;
-
+        
     struct node* temp = q -> front;
     struct node* next = temp -> next;
 
@@ -91,5 +70,3 @@ void deleteQueueNodes(struct queue* q) {
     q -> front = NULL;
     q -> back = NULL;
 }
-
-#endif

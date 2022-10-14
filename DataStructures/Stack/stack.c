@@ -1,7 +1,7 @@
 #include "stack.h"
 
 void main(void) {
-    struct node* head = initStack();
+    struct node* head = Stack();
     int i;
     for (i = 0; i < 10; ++i) {
         push(&head, i);
