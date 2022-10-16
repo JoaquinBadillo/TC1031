@@ -5,6 +5,9 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
+#define RED 'R'
+#define BLACK 'B'
+
 // Nodes and Queue definition
 typedef struct node {
     int key; // Priority

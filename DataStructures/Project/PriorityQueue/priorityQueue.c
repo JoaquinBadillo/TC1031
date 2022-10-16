@@ -1,29 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "priorityQueue.h"
-
+#include "nil.h"
 
 /*
     Priority Queue Implementation 
-
     It uses a Red Black Tree to keep a balanced Binary Search Tree
     This is important as it supports insertion, deletion and search in O(lg n) time
-
     The enqueue operation is just an insertion thus it takes O(lg n) time
     The dequeue operation searches the minimum key and deletes it, thus it takes O(lg n) time 
 */
 
-#define RED 'R'
-#define BLACK 'B'
-
-struct node NIL_Node;
-node* NIL = &NIL_Node;
-
 // RED BLACK TREE INTERFACE
 
 // Constructor
-struct node* Node(int key, int data) {
+struct node* Node(int key, int data) {    
     struct node* element;
     element = malloc(sizeof(struct node));
 
@@ -75,7 +66,7 @@ void insertNode(struct node** root, int key, int data) {
     if (prev == NIL)
        *root = element;
     else if (element -> key < prev -> key)
-        prev -> left  = element;
+        prev -> left = element;
     else
         prev -> right = element;
 
@@ -203,8 +194,8 @@ void rightRotate(struct node** root, struct node* y) {
 void insertFixUp(struct node** root, struct node* z) {
     node* temp;
 
-    while ((z != *root) && (z -> parent -> color == RED)) {
-        if (z -> parent -> key == z -> parent -> parent -> key) {
+    while (z -> parent -> color == RED) {
+        if (z -> parent == z -> parent -> parent -> left) {
             temp = z -> parent -> parent -> right;
             if (temp -> color == RED) {
                 z -> parent -> color = BLACK;
@@ -212,24 +203,26 @@ void insertFixUp(struct node** root, struct node* z) {
                 z -> parent -> parent -> color = RED;
                 z = z -> parent -> parent;
             }
-            else if(z -> key == z -> parent -> right -> key) {
+            else if(z == z -> parent -> right) {
                 z = z -> parent;
                 leftRotate(root, z);
             }
-            z -> parent -> color = BLACK;
-            z -> parent -> parent -> color = RED;
-            rightRotate(root, z -> parent -> parent);
+
+            if (z -> parent != NIL) {
+                z -> parent -> color = BLACK;
+                z -> parent -> parent -> color = RED;
+                rightRotate(root, z -> parent -> parent);  
+            }      
         }
         else {
             temp = z -> parent -> parent -> left;
-            if(temp -> color == RED) {
+            if (temp -> color == RED) {
                 z -> parent -> color = BLACK;
                 z -> color = BLACK;
                 z -> parent -> parent -> color = RED;
                 z = z -> parent -> parent;
             }
-            else if(z -> key == z -> parent -> left -> key)
-            {
+            else if (z == z -> parent -> left) {
                 z = z -> parent;
                 rightRotate(root, z);
             }

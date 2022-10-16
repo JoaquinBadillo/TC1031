@@ -1,7 +1,7 @@
 #include <stdio.h>
+#include <limits.h>
 
 #include "priorityQueue.h"
-
 
 void main(void) {
     struct priority_queue* P = Priority_Queue();
@@ -12,12 +12,12 @@ void main(void) {
     printf("ENQUEUE\n");
 
     // Insertion has a problem for elements after the 3rd insertion (probably accessing NIL)
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
         enqueue(P, priorities[i], data[i]);
 
     printf("\nDEQUEUE\n");
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
         dequeue(P);
 
     deleteQueue(&P);
