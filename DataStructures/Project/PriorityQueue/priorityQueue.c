@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #include "nil.h"
-#include "queue.h"
 
 /*
     Priority Queue Implementation 
@@ -14,7 +13,7 @@
 
 // RED BLACK TREE INTERFACE
 
-// Constructor
+// Constructor -- Time Complexity: O(1)
 struct node* Node(int key, int data) { 
     struct node* element;
     element = malloc(sizeof(struct node));
@@ -34,7 +33,7 @@ struct node* Node(int key, int data) {
     return element;
 }
 
-// Destructor
+// Destructor -- Time Complexity: O(n)
 void deleteSubtree(struct node** root, struct node* element) {
     if (element != NIL) {
         deleteSubtree(root, element -> left);
@@ -46,7 +45,7 @@ void deleteSubtree(struct node** root, struct node* element) {
     }
 }
 
-// Insertion
+// Insertion -- Time Complexity: O(lg n)
 void insertNode(struct node** root, int key, int data) {
     node* element = Node(key, data);
 	node* prev = NIL;
@@ -55,7 +54,7 @@ void insertNode(struct node** root, int key, int data) {
 	while (current != NIL) {
 		prev = current;
 
-		if (element -> key < current -> key)				/*For alphabetical tree :(*comparator)*/
+		if (element -> key < current -> key)
 			current = current -> left;
 		else
 			current = current -> right;
@@ -73,7 +72,7 @@ void insertNode(struct node** root, int key, int data) {
 	insertFixUp(root, element);
 }
 
-// Deletion
+// Deletion -- Time Complexity: O(lg n)
 void deleteNode(struct node** root, struct node* z) {
     struct node *x, *y;
     y = z;
@@ -110,48 +109,20 @@ void deleteNode(struct node** root, struct node* z) {
 
     if (yColor == BLACK)
         deleteFixUp(root, x);
-    
-    //bfs(*root);
 }
 
-// Breadth First Search
-void bfs(node* root) {
-    if (root == NIL)
-        return;
-
-    struct queue* q = malloc(sizeof(struct queue));
-    if (q == NULL)
-        return;
-
-    q -> front = NULL;
-    q -> back = NULL;
-
-    queueEnqueue(q, root);
-    while (!(queueIsEmpty(q))) {
-        struct node* v = queueDequeue(q);
-        printf("(%i, %i)\n", v -> key, v -> data);
-        if (v -> parent != NIL)
-            printf("Parent: (%i, %i)\n", v -> parent -> key, v -> parent -> data); 
-        if (v -> left != NIL)
-            printf("Left: (%i, %i)\n", v -> left -> key, v -> left -> data);
-        if (v -> right != NIL)
-            printf("Right: (%i, %i)\n", v -> right -> key, v -> right -> data);
-
-        if (v -> left != NIL)
-            queueEnqueue(q, v -> left);
-        if (v -> right != NIL)
-            queueEnqueue(q, v -> right);
-        
-        printf("\n");
+// In Order Traversal -- Time Complexity: O(n)
+void inOrderTraversal(struct node* subtreeRoot) {
+    if (subtreeRoot != NIL) {
+        inOrderTraversal(subtreeRoot -> right);
+        printf("-> (%i, %i) ", subtreeRoot -> key, subtreeRoot -> data);
+        inOrderTraversal(subtreeRoot -> left);
     }
-    free(q);
-    
-    printf("\n");
 }
 
 // PRIORITY QUEUE INTERFACE
 
-// Constructor
+// Constructor -- Time Complexity: O(1)
 struct priority_queue* Priority_Queue() {
     struct priority_queue* P;
     P = malloc(sizeof(struct priority_queue));
@@ -166,20 +137,20 @@ struct priority_queue* Priority_Queue() {
     return P;
 }
 
-// Destructor
+// Destructor -- Time Complexity: O(n)
 void deleteQueue(struct priority_queue** P) {
     deleteSubtree(&(P[0] -> root), P[0] -> root);
     free(*P);
     *P = NULL;
 }
 
-// Enqueue (with priority)
+// Enqueue (with priority) -- Time Complexity: O(lg n)
 void enqueue(struct priority_queue* P, int key, int data) {
     insertNode(&(P -> root), key, data);
     printf("Enqueued: (%i, %i)\n", key, data);
 }
 
-// Dequeue (with priority)
+// Dequeue (with priority) -- Time Complexity: O(lg n)
 int dequeue(struct priority_queue* P) {
     struct node* x = minimum(P -> root);
     int priority = x -> key;
@@ -187,6 +158,17 @@ int dequeue(struct priority_queue* P) {
     deleteNode(&(P -> root), x);
     printf("Dequeued: (%i, %i)\n", priority, value);
     return value;
+}
+
+// Show Queue -- Time Complexity: O(n)
+void printPQueue(struct priority_queue* P) {
+    if (P -> root == NIL)
+        printf("Queue is empty\n");
+    else {
+        printf("[BACK] ");
+        inOrderTraversal(P -> root);
+        printf("[FRONT]\n");
+    }
 }
 
 // HELPER FUNCTIONS

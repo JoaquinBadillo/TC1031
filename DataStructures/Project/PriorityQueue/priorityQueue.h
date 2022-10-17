@@ -29,13 +29,14 @@ struct node* Node();
 void deleteSubtree(struct node** root, struct node*);
 void insertNode(struct node** root, int key, int data);
 void deleteNode(struct node** root, struct node* z);
-void bfs(struct node* root);
+void inOrderTraversal(struct node* root);
 
 // Priority Queue Interface
 struct priority_queue* Priority_Queue();
 void deleteQueue(struct priority_queue** P);
 void enqueue(struct priority_queue* P, int key, int data);
 int dequeue(struct priority_queue* P);
+void printPQueue(struct priority_queue* P);
 
 // Additonal Functions
 
