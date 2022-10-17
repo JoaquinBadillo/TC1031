@@ -11,13 +11,13 @@ void main(void) {
 
     printf("ENQUEUE\n");
 
-    // Insertion has a problem
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 8; i++)
         enqueue(P, priorities[i], data[i]);
+        
 
     printf("\nDEQUEUE\n");
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 8; i++)
         dequeue(P);
 
     deleteQueue(&P);

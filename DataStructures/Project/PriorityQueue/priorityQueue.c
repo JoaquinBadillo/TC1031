@@ -15,7 +15,7 @@
 // RED BLACK TREE INTERFACE
 
 // Constructor
-struct node* Node(int key, int data) {    
+struct node* Node(int key, int data) { 
     struct node* element;
     element = malloc(sizeof(struct node));
 
@@ -49,37 +49,35 @@ void deleteSubtree(struct node** root, struct node* element) {
 // Insertion
 void insertNode(struct node** root, int key, int data) {
     node* element = Node(key, data);
-    
-    node* prev = NIL;
-    node* current = *root;
+	node* prev = NIL;
+	node* current = *root;
 
-    while (current != NIL) {
-       prev = current;
+	while (current != NIL) {
+		prev = current;
 
-       if (element -> key < current -> key)
-          current = current -> left;
-       else
-          current = current -> right;
-    }
+		if (element -> key < current -> key)				/*For alphabetical tree :(*comparator)*/
+			current = current -> left;
+		else
+			current = current -> right;
+	}
 
-    element -> parent = prev;
+	element -> parent = prev; 
 
-    if (prev == NIL)
-       *root = element;
-    else if (element -> key < prev -> key)
-        prev -> left = element;
-    else
-        prev -> right = element;
+	if(prev == NIL)
+		*root  = element;
+	else if (element -> key < prev -> key)
+		prev -> left = element;
+	else
+		prev -> right = element;
 
-    insertFixUp(root, element);
-
-    bfs(*root);
+	insertFixUp(root, element);
 }
 
 // Deletion
 void deleteNode(struct node** root, struct node* z) {
-    struct node* x;
-    struct node* y = z; 
+    struct node *x, *y;
+    y = z;
+
     char yColor = y -> color;
 
     if (z -> left == NIL) {
@@ -92,6 +90,7 @@ void deleteNode(struct node** root, struct node* z) {
         y = minimum(z -> right);
         yColor = y -> color;
         x = y -> right;
+
         if (y -> parent == z)
             x -> parent = y;
         else {
@@ -101,6 +100,7 @@ void deleteNode(struct node** root, struct node* z) {
         }
 
         transplant(root, z, y);
+
         y -> left = z -> left;
         y -> left -> parent = y;
         y -> color = z -> color;
@@ -111,9 +111,7 @@ void deleteNode(struct node** root, struct node* z) {
     if (yColor == BLACK)
         deleteFixUp(root, x);
     
-    NIL -> parent = NIL -> left = NIL -> right = NULL; 
-    
-    bfs(*root);
+    //bfs(*root);
 }
 
 // Breadth First Search
@@ -177,8 +175,8 @@ void deleteQueue(struct priority_queue** P) {
 
 // Enqueue (with priority)
 void enqueue(struct priority_queue* P, int key, int data) {
-    printf("Inserting: (%i, %i)\n", key, data);
     insertNode(&(P -> root), key, data);
+    printf("Enqueued: (%i, %i)\n", key, data);
 }
 
 // Dequeue (with priority)
@@ -186,111 +184,109 @@ int dequeue(struct priority_queue* P) {
     struct node* x = minimum(P -> root);
     int priority = x -> key;
     int value = x -> data;
-    printf("Removing: (%i, %i)\n", priority, value);
     deleteNode(&(P -> root), x);
+    printf("Dequeued: (%i, %i)\n", priority, value);
     return value;
 }
 
 // HELPER FUNCTIONS
 
 void leftRotate(struct node** root, struct node* x) {
-    node* y  = x -> right;
-    
-    x -> right = y -> left;
+    node* y = x -> right;				
+	x -> right = y -> left;
 
-    if ((x -> right) != NIL && (x-> right != NULL))
-        x -> right -> parent = x;
+	if (y -> left != NIL)
+		y -> left -> parent = x;
 
-    y -> parent = x -> parent;
+	y -> parent = x -> parent;
 
-    if (x -> parent == NIL)
-       *root = y;
-    else if (x == x -> parent -> left)
-       x -> parent -> left = y;
-    else
-       x -> parent -> right = y;
+	if (x -> parent == NIL)
+		*root = y;
+	else if(x == x -> parent -> left)
+		x -> parent -> left = y;
+	else 
+		x -> parent -> right = y;
 
-    y -> left = x;
-    x -> parent = y;
-
-    NIL -> parent = NIL -> left = NIL -> right = NULL; 
+	y -> left = x;
+	x -> parent = y; 
 }
 
 void rightRotate(struct node** root, struct node* y) {
     node* x = y -> left;
-    y -> left = x -> right;
+	y -> left = x -> right;
 
-    if (y -> left != NIL)
-        y -> left -> parent = y;
+	if(x -> right != NIL)
+		x -> right -> parent = y;
 
-    x -> parent = y -> parent;
+	x -> parent = y -> parent;
 
-    if (y -> parent == NIL)
-       *root = x;
-    else if (y == y -> parent -> left)
-       y -> parent -> left = x;
-    else
-       y -> parent -> right = x;
+	if(y -> parent == NIL)
+		*root = x;
+	else if( y == y -> parent -> right )
+		y -> parent -> right = x;
+	else
+		y -> parent -> left = x;
 
-    x -> right = y;
-    y -> parent = x;
 
-    NIL -> parent = NIL -> left = NIL -> right = NULL;
-    NIL -> color = BLACK;
+	x -> right = y;
+	y -> parent = x;
 }
 
 void insertFixUp(struct node** root, struct node* z) {
     node* temp;
-
+    int counter = 0;
     while (z -> parent -> color == RED) {
         if (z -> parent == z -> parent -> parent -> left) {
             temp = z -> parent -> parent -> right;
+
             if (temp -> color == RED) {
                 z -> parent -> color = BLACK;
                 temp -> color = BLACK;
                 z -> parent -> parent -> color = RED;
                 z = z -> parent -> parent;
-            }
-            else if(z == z -> parent -> right) {
-                z = z -> parent;
-                leftRotate(root, z);
-            }
 
-            if (z -> parent != NIL) {
+            } else {
+
+                if (z == z -> parent -> right) {
+                    z = z -> parent;
+                    leftRotate(root, z);
+                }
+
                 z -> parent -> color = BLACK;
                 z -> parent -> parent -> color = RED;
-                rightRotate(root, z -> parent -> parent);  
-            }      
-        }
-        else {
+                rightRotate(root, z -> parent -> parent);
+            }
+        } else {
             temp = z -> parent -> parent -> left;
+
             if (temp -> color == RED) {
                 z -> parent -> color = BLACK;
-                z -> color = BLACK;
+                temp -> color = BLACK;
                 z -> parent -> parent -> color = RED;
                 z = z -> parent -> parent;
+            } else {
+
+                if (z == z -> parent -> left) {
+                    z = z -> parent;
+                    rightRotate(root, z);
+                }
+
+                z -> parent -> color = BLACK;
+                z -> parent -> parent -> color = RED;
+                leftRotate(root, z -> parent -> parent);
             }
-            else if (z == z -> parent -> left) {
-                z = z -> parent;
-                rightRotate(root, z);
-            }
-            z -> parent -> color = BLACK;
-            z -> parent -> parent -> color = RED;
-            leftRotate(root, z -> parent -> parent);
         }
     }
-
-    NIL -> parent = NIL -> left = NIL -> right = NULL; 
-    NIL -> color = BLACK;
 
     root[0] -> color = BLACK;
 }
 
 void deleteFixUp(struct node** root, struct node* x) {
-    node* w;
-    while (x -> color == BLACK) {
+
+    while ((x != *root) && (x -> color == BLACK)) {
+
         if (x == x -> parent -> left) {
-            w = x -> parent -> right;
+            node* w = x -> parent -> right;
 
             if (w -> color == RED) {
                 w -> color = BLACK;
@@ -302,44 +298,52 @@ void deleteFixUp(struct node** root, struct node* x) {
             if ((w -> left -> color == BLACK) && (w -> right -> color == BLACK)) {
                 w -> color = RED;
                 x = x -> parent;
-            } else if (w -> right -> color == BLACK) {
-                w -> left -> color = BLACK;
-                w -> color = RED;
-                rightRotate(root, w);
-                w = x -> parent -> right;
-            }
+            } else {
 
-            w -> color = x -> parent -> color;
-            x -> parent -> color = BLACK;
-            w -> right -> color = BLACK;
-            leftRotate(root, x -> parent);
-            x = *root;
-        }
-        else {
-            w = x -> parent -> left;
+                if (w -> right -> color == BLACK) {
+                    w -> left -> color = BLACK;
+                    w -> color = RED;
+                    rightRotate(root, w);
+                    w = x -> parent -> right;
+                }
 
-            if (w -> color == RED) {
-                w -> color = BLACK;
-                x -> parent -> color = RED;
-                rightRotate(root, x -> parent);
-                w = x -> parent -> left;
-            }
-
-            if ((w -> right -> color == BLACK) && (w -> left -> color == BLACK)) {
-                w -> color = RED;
-                x = x -> parent;
-            } else if (w -> left -> color == BLACK) {
+                w -> color = x -> parent -> color;
+                x -> parent -> color = BLACK;
                 w -> right -> color = BLACK;
-                w -> color = RED;
-                leftRotate(root, w);
-                w = x -> parent -> left;
+                leftRotate(root, x -> parent);
+                x = *root;      
             }
+        } else {
 
-            w -> color = x -> parent -> color;
-            x -> parent -> color = BLACK;
-            w -> left -> color = BLACK;
-            rightRotate(root, x -> parent);
-            x = *root;      
+            if (x == x -> parent -> right) {
+                node* w = x -> parent -> left;
+
+                if (w -> color == RED) {
+                    w -> color = BLACK;
+                    x -> parent -> color = RED;
+                    rightRotate(root, x -> parent);
+                    w = x -> parent -> left;
+                }
+
+                if ((w -> right -> color == BLACK) && (w -> left -> color == BLACK)) {
+                    w -> color = RED;
+                    x = x -> parent;
+                } else {
+
+                    if (w -> left -> color == BLACK) {
+                        w -> right -> color = BLACK;
+                        w -> color = RED;
+                        leftRotate(root, w);
+                        w = x -> parent -> left;
+                    }
+
+                    w -> color = x -> parent -> color;
+                    x -> parent -> color = BLACK;
+                    w -> left -> color = BLACK;
+                    rightRotate(root, x -> parent);
+                    x = *root;  
+                }     
+            }
         }
     }
 
