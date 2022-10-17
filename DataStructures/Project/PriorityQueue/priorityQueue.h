@@ -2,8 +2,8 @@
     Priority Queue header file
 */
 
-#ifndef QUEUE_H
-#define QUEUE_H
+#ifndef PQUEUE_H
+#define PQUEUE_H
 
 #define RED 'R'
 #define BLACK 'B'
@@ -27,8 +27,9 @@ typedef struct priority_queue {
 // Tree Interface
 struct node* Node();
 void deleteSubtree(struct node** root, struct node*);
-void insertNode(struct node** T, int key, int data);
-void deleteNode(struct node** T, struct node* z);
+void insertNode(struct node** root, int key, int data);
+void deleteNode(struct node** root, struct node* z);
+void bfs(struct node* root);
 
 // Priority Queue Interface
 struct priority_queue* Priority_Queue();

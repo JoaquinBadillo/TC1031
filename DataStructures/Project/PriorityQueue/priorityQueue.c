@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "nil.h"
+#include "queue.h"
 
 /*
     Priority Queue Implementation 
@@ -71,6 +72,8 @@ void insertNode(struct node** root, int key, int data) {
         prev -> right = element;
 
     insertFixUp(root, element);
+
+    bfs(*root);
 }
 
 // Deletion
@@ -107,6 +110,45 @@ void deleteNode(struct node** root, struct node* z) {
 
     if (yColor == BLACK)
         deleteFixUp(root, x);
+    
+    NIL -> parent = NIL -> left = NIL -> right = NULL; 
+    
+    bfs(*root);
+}
+
+// Breadth First Search
+void bfs(node* root) {
+    if (root == NIL)
+        return;
+
+    struct queue* q = malloc(sizeof(struct queue));
+    if (q == NULL)
+        return;
+
+    q -> front = NULL;
+    q -> back = NULL;
+
+    queueEnqueue(q, root);
+    while (!(queueIsEmpty(q))) {
+        struct node* v = queueDequeue(q);
+        printf("(%i, %i)\n", v -> key, v -> data);
+        if (v -> parent != NIL)
+            printf("Parent: (%i, %i)\n", v -> parent -> key, v -> parent -> data); 
+        if (v -> left != NIL)
+            printf("Left: (%i, %i)\n", v -> left -> key, v -> left -> data);
+        if (v -> right != NIL)
+            printf("Right: (%i, %i)\n", v -> right -> key, v -> right -> data);
+
+        if (v -> left != NIL)
+            queueEnqueue(q, v -> left);
+        if (v -> right != NIL)
+            queueEnqueue(q, v -> right);
+        
+        printf("\n");
+    }
+    free(q);
+    
+    printf("\n");
 }
 
 // PRIORITY QUEUE INTERFACE
@@ -135,8 +177,8 @@ void deleteQueue(struct priority_queue** P) {
 
 // Enqueue (with priority)
 void enqueue(struct priority_queue* P, int key, int data) {
+    printf("Inserting: (%i, %i)\n", key, data);
     insertNode(&(P -> root), key, data);
-    printf("Enqueued: (%i, %i)\n", key, data);
 }
 
 // Dequeue (with priority)
@@ -144,8 +186,8 @@ int dequeue(struct priority_queue* P) {
     struct node* x = minimum(P -> root);
     int priority = x -> key;
     int value = x -> data;
+    printf("Removing: (%i, %i)\n", priority, value);
     deleteNode(&(P -> root), x);
-    printf("Dequeued: (%i, %i)\n", priority, value);
     return value;
 }
 
@@ -153,9 +195,10 @@ int dequeue(struct priority_queue* P) {
 
 void leftRotate(struct node** root, struct node* x) {
     node* y  = x -> right;
+    
     x -> right = y -> left;
 
-    if (x -> right != NIL)
+    if ((x -> right) != NIL && (x-> right != NULL))
         x -> right -> parent = x;
 
     y -> parent = x -> parent;
@@ -169,6 +212,8 @@ void leftRotate(struct node** root, struct node* x) {
 
     y -> left = x;
     x -> parent = y;
+
+    NIL -> parent = NIL -> left = NIL -> right = NULL; 
 }
 
 void rightRotate(struct node** root, struct node* y) {
@@ -189,6 +234,9 @@ void rightRotate(struct node** root, struct node* y) {
 
     x -> right = y;
     y -> parent = x;
+
+    NIL -> parent = NIL -> left = NIL -> right = NULL;
+    NIL -> color = BLACK;
 }
 
 void insertFixUp(struct node** root, struct node* z) {
@@ -231,12 +279,16 @@ void insertFixUp(struct node** root, struct node* z) {
             leftRotate(root, z -> parent -> parent);
         }
     }
+
+    NIL -> parent = NIL -> left = NIL -> right = NULL; 
+    NIL -> color = BLACK;
+
     root[0] -> color = BLACK;
 }
 
 void deleteFixUp(struct node** root, struct node* x) {
     node* w;
-    while ((x != *root) && (x -> color == BLACK)) {
+    while (x -> color == BLACK) {
         if (x == x -> parent -> left) {
             w = x -> parent -> right;
 
