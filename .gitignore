@@ -1,2 +1,9 @@
+# Don't add Visual Studio Code Settings
 .vscode*
+
+# Don't Jupyter Notebook Checkpoints
 .ipynb_checkpoints*
+
+# Ignore tests and executables
+main
+Test*
