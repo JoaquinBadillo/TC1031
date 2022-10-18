@@ -18,9 +18,8 @@ struct node* Node(int key, int data) {
     struct node* element;
     element = malloc(sizeof(struct node));
 
-    if (element == NULL) {
+    if (element == NULL)
         return NIL;
-    }
 
     element -> key = key;
     element -> data = data;
@@ -46,10 +45,16 @@ void deleteSubtree(struct node** root, struct node* element) {
 }
 
 // Insertion -- Time Complexity: O(lg n)
-void insertNode(struct node** root, int key, int data) {
-    node* element = Node(key, data);
-	node* prev = NIL;
-	node* current = *root;
+struct node* insertNode(struct node** root, int key, int data) {
+    struct node* element = Node(key, data);
+
+    if (element == NIL) {
+        printf("Error: No memory!\n");
+        return NULL;
+    }
+
+	struct node* prev = NIL;
+	struct node* current = *root;
 
 	while (current != NIL) {
 		prev = current;
@@ -70,6 +75,8 @@ void insertNode(struct node** root, int key, int data) {
 		prev -> right = element;
 
 	insertFixUp(root, element);
+
+    return element;
 }
 
 // Deletion -- Time Complexity: O(lg n)
@@ -146,23 +153,61 @@ void deleteQueue(struct priority_queue** P) {
 
 // Enqueue (with priority) -- Time Complexity: O(lg n)
 void enqueue(struct priority_queue* P, int key, int data) {
-    insertNode(&(P -> root), key, data);
-    printf("Enqueued: (%i, %i)\n", key, data);
+    struct node* inserted = insertNode(&(P -> root), key, data);
+    if (inserted) {
+        P -> size++; 
+        printf("Enqueued: (%i, %i)\n", key, data);
+    }
 }
 
 // Dequeue (with priority) -- Time Complexity: O(lg n)
 int dequeue(struct priority_queue* P) {
+    if (isEmpty(P)) {
+        printf("Queue is empty!\n");
+        return -1;
+    }
+
     struct node* x = minimum(P -> root);
     int priority = x -> key;
     int value = x -> data;
     deleteNode(&(P -> root), x);
+    P -> size--;
     printf("Dequeued: (%i, %i)\n", priority, value);
     return value;
 }
 
+// Find node -- Time Complexity: O(lg n)
+struct node* findNode(struct priority_queue* P, int key, int data) {
+    struct node* current = P -> root;
+
+    while (P -> root != NIL) {
+        if (current -> key < key)
+            current = current -> left;
+        else if (current -> key > key)
+            current = current -> right;
+        else if (current -> data != data)
+            current = current -> right;
+        else
+            return current;
+    }
+
+    printf("Node not found\n");
+    return NULL;
+}
+
+// Determine if PQueue is empty -- Time Complexity: O(1)
+short isEmpty(struct priority_queue* P) {
+    return P -> size == 0 ? 1 : 0;
+}
+
+// Determine the size of the PQueue -- Time Complexity: O(1)
+int size(struct priority_queue* P) {
+    return P -> size;
+}
+
 // Show Queue -- Time Complexity: O(n)
 void printPQueue(struct priority_queue* P) {
-    if (P -> root == NIL)
+    if (isEmpty(P))
         printf("Queue is empty\n");
     else {
         printf("[BACK] ");

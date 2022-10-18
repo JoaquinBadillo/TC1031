@@ -27,7 +27,7 @@ typedef struct priority_queue {
 // Tree Interface
 struct node* Node();
 void deleteSubtree(struct node** root, struct node*);
-void insertNode(struct node** root, int key, int data);
+struct node* insertNode(struct node** root, int key, int data);
 void deleteNode(struct node** root, struct node* z);
 void inOrderTraversal(struct node* root);
 
@@ -39,6 +39,9 @@ int dequeue(struct priority_queue* P);
 void printPQueue(struct priority_queue* P);
 
 // Additonal Functions
+struct node* findNode(struct priority_queue* P, int key, int data);
+short isEmpty(struct priority_queue* P);
+int size(struct priority_queue* P);
 
 // Helper Functions
 void leftRotate(struct node** tree, struct node* x); 
