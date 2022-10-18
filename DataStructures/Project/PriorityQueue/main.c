@@ -11,13 +11,13 @@ void main(void) {
     
     printf("ENQUEUE\n");
     for (int i = 0; i < n; i++) {
-        enqueue(P, rand() % 10 + 1, i);
-        printf("Size: %i\n", size(P));
         if (isEmpty(P))
             printf("Queue is empty\n");
+        enqueue(P, rand() % 10 + 1, i);
+        printf("Size: %i\n", size(P));
     }
 
-    printf("\nQueue:\n");
+    printf("\nPrint Queue:\n");
     printPQueue(P);
 
     printf("\nDEQUEUE\n");
@@ -28,7 +28,7 @@ void main(void) {
             printf("Queue is empty\n");
     }
 
-    printf("\nQueue:\n");
+    printf("\nPrint Queue:\n");
     printPQueue(P);
 
     deleteQueue(&P);

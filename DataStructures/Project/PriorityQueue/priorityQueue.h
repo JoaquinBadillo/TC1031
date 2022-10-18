@@ -36,12 +36,12 @@ struct priority_queue* Priority_Queue();
 void deleteQueue(struct priority_queue** P);
 void enqueue(struct priority_queue* P, int key, int data);
 int dequeue(struct priority_queue* P);
-void printPQueue(struct priority_queue* P);
 
 // Additonal Functions
 struct node* findNode(struct priority_queue* P, int key, int data);
 short isEmpty(struct priority_queue* P);
 int size(struct priority_queue* P);
+void printPQueue(struct priority_queue* P);
 
 // Helper Functions
 void leftRotate(struct node** tree, struct node* x); 
