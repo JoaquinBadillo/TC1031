@@ -1,17 +1,25 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
 
-#include "nil.h"
+#include "priorityQueue.h"
 
 /*
     Priority Queue Implementation 
-    It uses a Red Black Tree to keep a balanced Binary Search Tree
+    It uses a Red Black Tree to maintain a Binary Search Tree with logarithmic height.
     This is important as it supports insertion, deletion and search in O(lg n) time
     The enqueue operation is just an insertion thus it takes O(lg n) time
     The dequeue operation searches the minimum key and deletes it, thus it takes O(lg n) time 
+
+    The Red Black Tree follows H. Cormen, Charles E. Leiserson, Ronald L. Rivest & Clifford Stein
+    Introduction to Algorithms' implementation.
 */
 
 // RED BLACK TREE INTERFACE
+
+// NIL Sentinel (Following Cormen, et al. implementation)
+struct node nil_node = {.key = INT_MAX, .data = 0, .color = BLACK, .parent = &nil_node, .left = &nil_node, .right = &nil_node};
+struct node* NIL = &nil_node;
 
 // Constructor -- Time Complexity: O(1)
 struct node* Node(int key, int data) { 
@@ -219,7 +227,7 @@ void printPQueue(struct priority_queue* P) {
 // HELPER FUNCTIONS
 
 void leftRotate(struct node** root, struct node* x) {
-    node* y = x -> right;				
+    struct node* y = x -> right;				
 	x -> right = y -> left;
 
 	if (y -> left != NIL)
@@ -239,7 +247,7 @@ void leftRotate(struct node** root, struct node* x) {
 }
 
 void rightRotate(struct node** root, struct node* y) {
-    node* x = y -> left;
+    struct node* x = y -> left;
 	y -> left = x -> right;
 
 	if(x -> right != NIL)
@@ -260,7 +268,7 @@ void rightRotate(struct node** root, struct node* y) {
 }
 
 void insertFixUp(struct node** root, struct node* z) {
-    node* temp;
+    struct node* temp;
     int counter = 0;
     while (z -> parent -> color == RED) {
         if (z -> parent == z -> parent -> parent -> left) {
@@ -313,7 +321,7 @@ void deleteFixUp(struct node** root, struct node* x) {
     while ((x != *root) && (x -> color == BLACK)) {
 
         if (x == x -> parent -> left) {
-            node* w = x -> parent -> right;
+            struct node* w = x -> parent -> right;
 
             if (w -> color == RED) {
                 w -> color = BLACK;
@@ -343,7 +351,7 @@ void deleteFixUp(struct node** root, struct node* x) {
         } else {
 
             if (x == x -> parent -> right) {
-                node* w = x -> parent -> left;
+                struct node* w = x -> parent -> left;
 
                 if (w -> color == RED) {
                     w -> color = BLACK;
@@ -389,7 +397,7 @@ void transplant(struct node** root, struct node* u, struct node* v) {
 }
 
 struct node* minimum(struct node* T) {
-    node* temp = T;
+    struct node* temp = T;
 
     while (temp -> left != NIL) {
         temp = temp -> left;
