@@ -25,18 +25,13 @@ void insertVertex(vertex** root, int x) {
 
         while (current != NULL) {
             prev = current;
-
-            if (x < current -> value)
-                current = current -> left;
-            else 
-                current = current -> right;
+            x < (current -> value) ? (current = current -> left) : (current = current -> right);
         }
 
-        if (x < prev -> value)
-            prev -> left = element;
-        else
-            prev -> right = element;
+        x < (prev -> value) ? (prev -> left = element) : (prev -> right = element);
     }
+
+    printf("Inserted: %i\n", x);
 }
 
 void deleteSubTree(vertex** root, vertex* element) {
@@ -77,7 +72,7 @@ void postOrderTraversal(vertex* v) {
 vertex* search(vertex* root, int x) {
     vertex* current = root;
 
-    while (current != NULL) {
+    while (current) {
         if (x < current -> value) {
             current = current -> left;
         }
@@ -95,7 +90,11 @@ vertex* search(vertex* root, int x) {
 vertex* minNode(vertex* element) {
     vertex* current = element;
 
-    while (current && current -> left != NULL)
+    if (current == NULL) {
+        return NULL;
+    }
+
+    while (current -> left)
         current = current -> left;
     
     return current;
@@ -147,7 +146,7 @@ int size(vertex* root) {
 
 int addEvenValues(vertex* v) {
     int sum = 0;
-    if (v != NULL) {
+    if (v) {
         if (v -> value % 2 == 0)
             sum += v -> value;
 
@@ -159,7 +158,7 @@ int addEvenValues(vertex* v) {
 
 int addOddValues(vertex* v) {
     int sum = 0;
-    if (v != NULL) {
+    if (v) {
         if (v -> value % 2 == 1)
             sum += v -> value;
 
@@ -170,9 +169,9 @@ int addOddValues(vertex* v) {
 }
 
 void printLeaves(vertex* v) {
-    if (v != NULL) {
+    if (v) {
         printLeaves(v -> left);
-        if (v -> left == NULL && v -> right == NULL) {
+        if ((v -> left == NULL) && (v -> right == NULL)) {
             printf("%i\t", v -> value);   
         }
         printLeaves(v -> right);
@@ -188,9 +187,9 @@ void bfs(vertex* root) {
     while (!(isEmpty(q))) {
         struct vertex* v = dequeue(q);
         printf("%i\t", v -> value);
-        if (v -> left != NULL)
+        if (v -> left)
             enqueue(q, v -> left);
-        if (v -> right != NULL)
+        if (v -> right)
             enqueue(q, v -> right);
     }
     free(q);
