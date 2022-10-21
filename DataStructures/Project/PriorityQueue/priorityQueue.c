@@ -405,3 +405,13 @@ struct node* minimum(struct node* T) {
 
     return temp;
 }
+
+struct node* maximum(struct node* T) {
+    struct node* temp = T;
+
+    while (temp -> right != NIL) {
+        temp = temp -> right;
+    }
+
+    return temp;
+}

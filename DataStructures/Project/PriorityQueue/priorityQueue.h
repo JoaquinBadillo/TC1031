@@ -48,6 +48,7 @@ void leftRotate(struct node** tree, struct node* x);
 void rightRotate(struct node** tree, struct node* y);
 void insertFixUp(struct node** tree, struct node* z);
 struct node* minimum(struct node* subtree);
+struct node* maximum(struct node* subtree);
 void transplant(struct node** tree, struct node* u, struct node* v);
 void deleteFixUp(struct node** tree, struct node* x);
 
